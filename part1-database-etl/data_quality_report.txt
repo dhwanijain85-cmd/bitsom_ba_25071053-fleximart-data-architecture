@@ -1,0 +1,23 @@
+DATA QUALITY REPORT
+======================================================================
+
+CUSTOMERS
+----------------------------------------------------------------------
+Number of records processed per file: 26
+Number of duplicates removed: 1
+Number of missing values handled: 5
+Number of records loaded successfully: 20
+
+PRODUCTS
+----------------------------------------------------------------------
+Number of records processed per file: 20
+Number of duplicates removed: 0
+Number of missing values handled: 4
+Number of records loaded successfully: 17
+
+SALES
+----------------------------------------------------------------------
+Number of records processed per file: 41
+Number of duplicates removed: 1
+Number of missing values handled: 5
+Number of records loaded successfully: 25
