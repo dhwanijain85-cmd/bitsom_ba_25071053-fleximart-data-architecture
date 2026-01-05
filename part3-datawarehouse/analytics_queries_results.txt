@@ -1,0 +1,43 @@
+ANALYTICS QUERIES RESULTS
+======================================================================
+
+Query 1: Monthly Sales Drill-Down Analysis
+----------------------------------------------------------------------
+SELECT d.year, d.quarter, d.month_name, SUM(f.total_amount) AS total_sales, SUM(f.quantity_sold) AS total_quantity FROM fact_sales f INNER JOIN dim_date d ON f.date_key = d.date_key WHERE d.year = 2024 GROUP BY d.year, d.quarter, d.month_name, d.month ORDER BY d.year, d.quarter, d.month;
+
+Result:
+year  | quarter | month_name | total_sales | total_quantity
+------|---------|------------|-------------|---------------
+2024  | Q1      | January    | 595905.00   | 88
+2024  | Q1      | February   | 206283.00   | 23
+
+
+Query 2: Product Performance Analysis (Top 10)
+----------------------------------------------------------------------
+SELECT p.product_name, p.category, SUM(f.quantity_sold) AS units_sold, SUM(f.total_amount) AS revenue, ROUND(SUM(f.total_amount) * 100.0 / SUM(SUM(f.total_amount)) OVER (), 2) AS revenue_percentage FROM fact_sales f INNER JOIN dim_product p ON f.product_key = p.product_key GROUP BY p.product_key, p.product_name, p.category ORDER BY revenue DESC LIMIT 10;
+
+Result:
+product_name                  | category    | units_sold | revenue    | revenue_percentage
+------------------------------|-------------|------------|------------|-------------------
+Samsung Galaxy S21            | Electronics | 4          | 256996.00  | 32.04
+Apple MacBook Air             | Electronics | 3          | 242997.00  | 30.29
+Dell 24-inch Monitor          | Electronics | 4          | 71496.00   | 8.91
+Sony WH-1000XM4 Headphones    | Electronics | 3          | 67497.00   | 8.41
+Nike Air Max Sneakers         | Fashion     | 5          | 42695.00   | 5.32
+Levis 501 Jeans               | Fashion     | 7          | 23693.00   | 2.95
+Ray-Ban Sunglasses            | Fashion     | 3          | 20997.00   | 2.62
+Logitech Wireless Mouse       | Electronics | 7          | 20993.00   | 2.62
+Adidas Sports T-Shirt         | Fashion     | 12         | 16888.00   | 2.11
+Basmati Rice 5kg              | Groceries   | 15         | 9250.00    | 1.15
+
+
+Query 3: Customer Segmentation Analysis
+----------------------------------------------------------------------
+WITH customer_spending AS (...), customer_segments AS (...) SELECT customer_segment, COUNT(*) AS customer_count, SUM(total_spent) AS total_revenue, ROUND(AVG(total_spent), 2) AS avg_revenue FROM customer_segments GROUP BY customer_segment ORDER BY total_revenue DESC;
+
+Result:
+customer_segment | customer_count | total_revenue | avg_revenue
+-----------------|----------------|---------------|-------------
+High Value       | 5              | 640476.00     | 128095.20
+Medium Value     | 3              | 110282.00     | 36760.67
+Low Value        | 4              | 51430.00      | 12857.50
