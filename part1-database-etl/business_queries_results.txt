@@ -1,0 +1,43 @@
+BUSINESS QUERIES RESULTS
+======================================================================
+
+Query 1: Customer Purchase History
+----------------------------------------------------------------------
+SELECT CONCAT(c.first_name, ' ', c.last_name) AS customer_name, c.email, COUNT(DISTINCT o.order_id) AS total_orders, SUM(oi.subtotal) AS total_spent FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id INNER JOIN order_items oi ON o.order_id = oi.order_id GROUP BY c.customer_id, c.first_name, c.last_name, c.email HAVING COUNT(DISTINCT o.order_id) >= 2 AND SUM(oi.subtotal) > 5000 ORDER BY total_spent DESC;
+
+Result:
+customer_name      | email                        | total_orders | total_spent
+-------------------|------------------------------|--------------|-------------
+Arjun Rao          | arjun.rao@gmail.com          | 2            | 82998.00
+Karthik Nair       | karthik.nair@yahoo.com       | 2            | 57598.00
+Priya Patel        | priya.patel@yahoo.com        | 2            | 51997.00
+Rajesh Kumar       | rajesh.kumar@gmail.com       | 2            | 36595.00
+Anjali Mehta       | anjali.mehta@gmail.com       | 2            | 17598.00
+Neha Shah          | neha.shah@gmail.com          | 2            | 5596.00
+Suresh Patel       | suresh.patel@osutlook.com    | 2            | 5348.00
+
+
+Query 2: Product Sales Analysis
+----------------------------------------------------------------------
+SELECT p.category, COUNT(DISTINCT p.product_id) AS num_products, SUM(oi.quantity) AS total_quantity_sold, SUM(oi.subtotal) AS total_revenue FROM products p INNER JOIN order_items oi ON p.product_id = oi.product_id GROUP BY p.category HAVING SUM(oi.subtotal) > 10000 ORDER BY total_revenue DESC;
+
+Result:
+category       | num_products | total_quantity_sold | total_revenue
+---------------|--------------|---------------------|---------------
+Electronics    | 7            | 14                  | 353986.00
+Fashion        | 4            | 10                  | 27190.00
+Groceries      | 4            | 42                  | 18601.00
+
+
+Query 3: Monthly Sales Trend
+----------------------------------------------------------------------
+SELECT month_name, total_orders, monthly_revenue, SUM(monthly_revenue) OVER (ORDER BY month_num) AS cumulative_revenue FROM (SELECT MONTH(o.order_date) AS month_num, MONTHNAME(o.order_date) AS month_name, COUNT(DISTINCT o.order_id) AS total_orders, SUM(oi.subtotal) AS monthly_revenue FROM orders o INNER JOIN order_items oi ON o.order_id = oi.order_id WHERE YEAR(o.order_date) = 2024 GROUP BY MONTH(o.order_date), MONTHNAME(o.order_date)) AS monthly_data ORDER BY month_num;
+
+Result:
+month_name  | total_orders | monthly_revenue | cumulative_revenue
+------------|--------------|-----------------|--------------------
+January     | 6            | 72505.00        | 72505.00
+February    | 6            | 113940.00       | 186445.00
+March       | 8            | 128242.00       | 314687.00
+April       | 4            | 82092.00        | 396779.00
+October     | 1            | 2998.00         | 399777.00
